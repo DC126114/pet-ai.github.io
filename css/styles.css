@@ -660,15 +660,35 @@ footer {
     }
 
     header .container {
-        flex-direction: column;
+        flex-direction: row; /* 改為水平排列 */
+        justify-content: space-between; /* 兩端對齊 */
+        align-items: center;
     }
 
-    nav ul {
-        margin-top: 15px;
+    .menu-icon {
+        display: block; /* 顯示菜單圖標 */
+    }
+
+    .nav-menu {
+        display: none; /* 默認隱藏導航菜單 */
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #3e2723;
+        flex-direction: column;
+        padding: 10px 0;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .menu-toggle:checked ~ .nav-menu {
+        display: flex; /* 選中時顯示導航菜單 */
     }
 
     nav ul li {
-        margin: 0 10px;
+        margin: 10px 0;
+        width: 100%;
+        text-align: center;
     }
     
     /* 新增的響應式樣式 */
@@ -689,17 +709,11 @@ footer {
 
 @media (max-width: 768px) {
     header .container {
-        flex-direction: column;
-        align-items: center;
+        padding: 10px 15px; /* 減小內邊距 */
     }
     
-    nav ul {
-        margin-top: 15px;
-    }
-    
-    nav ul li {
-        margin-left: 15px;
-        margin-right: 15px;
+    .logo-text {
+        font-size: 1.3rem; /* 減小logo文字大小 */
     }
     
     .hero-content h2 {
@@ -729,12 +743,13 @@ footer {
     
     /* 聊天界面在移動設備上的優化 */
     .chat-container {
-        height: 70vh; /* 在移動設備上減小聊天容器高度 */
+        height: 60vh; /* 減小聊天容器高度 */
         margin: 10px 0;
     }
     
     .chat-messages {
         padding: 10px;
+        height: calc(100% - 60px); /* 減小聊天消息區域高度，為輸入區域留出空間 */
     }
     
     .message {
@@ -743,18 +758,26 @@ footer {
         max-width: 85%;
     }
     
-    .user-input {
-        padding: 8px;
+    .chat-input {
+        padding: 10px;
+        height: 50px; /* 固定輸入區域高度 */
+        display: flex;
+        align-items: center;
     }
     
-    #user-message {
-        padding: 8px;
+    .chat-input input {
+        height: 36px; /* 固定輸入框高度 */
+        padding: 0 12px;
         font-size: 14px;
     }
     
-    .send-button {
-        padding: 8px 12px;
+    .chat-input button {
+        height: 36px; /* 固定按鈕高度 */
+        padding: 0 15px;
         font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     /* 建議問題在移動設備上的樣式 */
@@ -772,9 +795,8 @@ footer {
 }
 
 @media (max-width: 576px) {
-    nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
+    .menu-icon span {
+        font-size: 0.9rem; /* 減小菜單文字大小 */
     }
     
     /* 小屏幕手機優化 */
@@ -805,14 +827,22 @@ footer {
         height: 35px;
     }
     
-    .chat-input input {
+    .chat-input {
         padding: 8px;
-        font-size: 14px;
+        height: 45px; /* 進一步減小輸入區域高度 */
+    }
+    
+    .chat-input input {
+        height: 32px; /* 進一步減小輸入框高度 */
+        padding: 0 10px;
+        font-size: 13px;
     }
     
     .chat-input button {
-        padding: 8px 15px;
-        font-size: 14px;
+        height: 32px; /* 進一步減小按鈕高度 */
+        padding: 0 12px;
+        font-size: 13px;
+        min-width: 60px; /* 確保按鈕有足夠的寬度 */
     }
     
     /* 建議問題按鈕在小屏幕上的進一步優化 */
@@ -1005,4 +1035,24 @@ footer {
     padding: 8px 12px;
     font-size: 13px;
     flex: 0 0 calc(50% - 10px); /* 在移動設備上每行顯示兩個按鈕 */
+}
+
+/* 菜單相關樣式 */
+.menu-toggle {
+    display: none; /* 默認隱藏複選框 */
+}
+
+.menu-icon {
+    display: none; /* 默認隱藏菜單圖標 */
+    cursor: pointer;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #d7ccc8;
+    font-weight: 500;
+}
+
+.menu-icon:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.2);
 }
