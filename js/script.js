@@ -12,6 +12,35 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(function() {
         plusSlides(1);
     }, 2000);
+    
+    // 添加觸摸滑動支持
+    const slideshowContainer = document.querySelector('.slideshow-container');
+    if (slideshowContainer) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        // 觸摸開始事件
+        slideshowContainer.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        // 觸摸結束事件
+        slideshowContainer.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        // 處理滑動方向
+        function handleSwipe() {
+            if (touchEndX < touchStartX) {
+                // 向左滑動，顯示下一張
+                plusSlides(1);
+            } else if (touchEndX > touchStartX) {
+                // 向右滑動，顯示上一張
+                plusSlides(-1);
+            }
+        }
+    }
 });
 
 // 前後按鈕控制

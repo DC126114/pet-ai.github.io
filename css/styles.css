@@ -165,6 +165,8 @@ nav ul li a:hover, nav ul li a.active {
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
 }
 
 .mySlides {
@@ -671,6 +673,7 @@ footer {
     .hero-content, .preview-content {
         width: 100%;
         margin-bottom: 30px;
+        padding-right: 0; /* 移除右側內邊距 */
     }
 
     .feature-cards {
@@ -708,6 +711,12 @@ footer {
     .question-buttons {
         flex-direction: column;
     }
+    
+    /* 輪播圖按鈕優化 */
+    .prev, .next {
+        padding: 12px;
+        font-size: 16px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -739,12 +748,135 @@ footer {
     .footer-content {
         flex-direction: column;
     }
+    
+    /* 輪播圖按鈕進一步優化 */
+    .prev, .next {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    /* 聊天界面優化 */
+    .chat-messages {
+        max-height: 350px;
+    }
+    
+    .message-content {
+        max-width: 75%;
+    }
+    
+    /* 聊天界面在移動設備上的優化 */
+    .chat-container {
+        height: 70vh; /* 在移動設備上減小聊天容器高度 */
+        margin: 10px 0;
+    }
+    
+    .chat-messages {
+        padding: 10px;
+    }
+    
+    .message {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+        max-width: 85%;
+    }
+    
+    .user-input {
+        padding: 8px;
+    }
+    
+    #user-message {
+        padding: 8px;
+        font-size: 14px;
+    }
+    
+    .send-button {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    /* 建議問題在移動設備上的樣式 */
+    .suggested-questions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .question-button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 13px;
+        flex: 0 0 calc(50% - 10px); /* 在移動設備上每行顯示兩個按鈕 */
+    }
 }
 
 @media (max-width: 576px) {
     nav ul {
         flex-wrap: wrap;
         justify-content: center;
+    }
+    
+    /* 小屏幕手機優化 */
+    .hero-content h2 {
+        font-size: 1.8rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+    }
+    
+    /* 輪播圖按鈕在超小屏幕上的優化 */
+    .prev, .next {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    /* 聊天界面在小屏幕上的進一步優化 */
+    .chat-messages {
+        max-height: 300px;
+    }
+    
+    .message-content {
+        max-width: 85%;
+    }
+    
+    .avatar img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .chat-input input {
+        padding: 8px;
+        font-size: 14px;
+    }
+    
+    .chat-input button {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
+    
+    /* 建議問題按鈕在小屏幕上的進一步優化 */
+    .question-btn {
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    
+    /* 超小屏幕設備的樣式 */
+    .hero-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    .question-button {
+        flex: 0 0 calc(100% - 10px); /* 在超小屏幕上每行顯示一個按鈕 */
+    }
+    
+    .dot {
+        height: 10px;
+        width: 10px;
+        margin: 0 3px;
     }
 }
 
@@ -849,4 +981,22 @@ footer {
 .chat-input input:disabled {
     background-color: #f5f5f5;
     cursor: not-allowed;
+}
+
+/* 添加觸摸友好的樣式 */
+@media (hover: none) {
+    /* 在觸摸設備上增大按鈕點擊區域 */
+    .nav-link, 
+    .button,
+    .send-button,
+    .question-button,
+    .prev, 
+    .next {
+        padding: 12px 16px; /* 增大內邊距 */
+    }
+    
+    /* 確保輪播導航按鈕在觸摸設備上更容易點擊 */
+    .prev, .next {
+        opacity: 0.8; /* 始終保持一定可見度 */
+    }
 }
