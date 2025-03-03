@@ -182,32 +182,6 @@ nav ul li a:hover, nav ul li a.active {
     display: block;
 }
 
-/* 前後按鈕 */
-.prev, .next {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    width: auto;
-    margin-top: -22px;
-    padding: 16px;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.6s ease;
-    border-radius: 0 3px 3px 0;
-    user-select: none;
-    background-color: rgba(121, 85, 72, 0.5); /* 半透明棕色背景 */
-}
-
-.next {
-    right: 0;
-    border-radius: 3px 0 0 3px;
-}
-
-.prev:hover, .next:hover {
-    background-color: rgba(121, 85, 72, 0.8); /* 懸停時加深背景色 */
-}
-
 /* 指示點樣式 */
 .dots-container {
     margin-top: 10px;
@@ -711,17 +685,12 @@ footer {
     .question-buttons {
         flex-direction: column;
     }
-    
-    /* 輪播圖按鈕優化 */
-    .prev, .next {
-        padding: 12px;
-        font-size: 16px;
-    }
 }
 
 @media (max-width: 768px) {
     header .container {
         flex-direction: column;
+        align-items: center;
     }
     
     nav ul {
@@ -747,12 +716,6 @@ footer {
     
     .footer-content {
         flex-direction: column;
-    }
-    
-    /* 輪播圖按鈕進一步優化 */
-    .prev, .next {
-        padding: 10px;
-        font-size: 14px;
     }
     
     /* 聊天界面優化 */
@@ -826,12 +789,6 @@ footer {
     .section-title {
         font-size: 1.5rem;
         margin-bottom: 30px;
-    }
-    
-    /* 輪播圖按鈕在超小屏幕上的優化 */
-    .prev, .next {
-        padding: 8px;
-        font-size: 12px;
     }
     
     /* 聊天界面在小屏幕上的進一步優化 */
@@ -989,14 +946,63 @@ footer {
     .nav-link, 
     .button,
     .send-button,
-    .question-button,
-    .prev, 
-    .next {
+    .question-button {
         padding: 12px 16px; /* 增大內邊距 */
     }
-    
-    /* 確保輪播導航按鈕在觸摸設備上更容易點擊 */
-    .prev, .next {
-        opacity: 0.8; /* 始終保持一定可見度 */
-    }
+}
+
+.footer-content {
+    flex-direction: column;
+}
+
+/* 聊天界面優化 */
+.chat-messages {
+    max-height: 350px;
+}
+
+.message-content {
+    max-width: 75%;
+}
+
+/* 聊天界面在移動設備上的優化 */
+.chat-container {
+    height: 70vh; /* 在移動設備上減小聊天容器高度 */
+    margin: 10px 0;
+}
+
+.chat-messages {
+    padding: 10px;
+}
+
+.message {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    max-width: 85%;
+}
+
+.user-input {
+    padding: 8px;
+}
+
+#user-message {
+    padding: 8px;
+    font-size: 14px;
+}
+
+.send-button {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+/* 建議問題在移動設備上的樣式 */
+.suggested-questions {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.question-button {
+    margin: 5px;
+    padding: 8px 12px;
+    font-size: 13px;
+    flex: 0 0 calc(50% - 10px); /* 在移動設備上每行顯示兩個按鈕 */
 }
