@@ -8,10 +8,10 @@ const API_URL = "https://api.siliconflow.cn/v1/chat/completions"; // 修正為�
 // 頁面加載完成後自動顯示第一張圖片並啟動自動輪播
 document.addEventListener('DOMContentLoaded', function() {
     showSlides(slideIndex);
-    // 自動輪播，每 5 秒切換一次
+    // 自動輪播，每 2 秒切換一次
     setInterval(function() {
         plusSlides(1);
-    }, 5000);
+    }, 2000);
 });
 
 // 前後按鈕控制
@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 發送消息函數
     async function sendMessage() {
         const message = userInput.value.trim();
+        
         if (message === '') return;
         
         // 添加用戶消息到聊天界面
@@ -103,42 +104,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        contentDiv.id = 'ai-response-content';
+        contentDiv.innerHTML = '<p>思考中...</p>';
         
-        // 創建一個段落用於顯示流式回答
-        const paragraph = document.createElement('p');
-        paragraph.innerHTML = "<span class='thinking'>思考中<span class='dot-1'>.</span><span class='dot-2'>.</span><span class='dot-3'>.</span></span>";
-        paragraph.style.whiteSpace = "normal";
-        paragraph.style.wordBreak = "break-word";
-        
-        contentDiv.appendChild(paragraph);
         aiMessageDiv.appendChild(avatarDiv);
         aiMessageDiv.appendChild(contentDiv);
         
         chatMessages.appendChild(aiMessageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
         
-        // 設置超時計時器
-        const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error("請求超時，請稍後再試")), 15000); // 15秒超時
-        });
-        
         try {
             // 調用AI API並處理流式回答
-            await streamAIResponse(message, contentDiv);
+            await streamAI(message, contentDiv);
             
             // 滾動到最新消息
             chatMessages.scrollTop = chatMessages.scrollHeight;
         } catch (error) {
-            // 顯示錯誤消息
-            console.error("AI API 調用錯誤:", error);
-            
-            // 更新思考中的消息為錯誤消息
-            if (error.message === "請求超時，請稍後再試") {
-                contentDiv.innerHTML = "<p>抱歉，回答需要較長時間。您可以稍後再試，或者嘗試簡化您的問題。</p>";
-            } else {
-                contentDiv.innerHTML = "<p>抱歉，我暫時無法回答您的問題。請稍後再試。</p>";
-            }
+            console.error("處理AI回答時出錯:", error);
+            contentDiv.innerHTML = `<p>抱歉，處理您的請求時出現問題。請稍後再試。</p>`;
         } finally {
             // 重新啟用輸入框和發送按鈕
             userInput.disabled = false;
@@ -147,10 +129,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // 處理流式AI回答
-    async function streamAIResponse(message, contentElement) {
+    // 流式調用 AI API
+    async function streamAI(message, contentElement) {
         try {
-            console.log("開始調用 AI API...");
+            console.log("開始流式調用 AI API...");
             
             // 構建請求數據
             const requestData = {
@@ -202,9 +184,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const decoder = new TextDecoder();
                 let content = "";
                 
-                // 移除"思考中..."的提示
-                contentElement.innerHTML = "<p></p>";
-                const responseParagraph = contentElement.querySelector('p');
+                // 創建一個段落元素來顯示實時回應
+                const responseParagraph = document.createElement('p');
+                contentElement.innerHTML = '';
+                contentElement.appendChild(responseParagraph);
                 
                 // 設置讀取超時
                 let lastChunkTime = Date.now();
@@ -264,39 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         }
                     }
-                    
-                    // 處理完成後，將內容分段
-                    if (content) {
-                        // 將內容按段落分割
-                        const paragraphs = content.split('\n\n');
-                        let formattedHtml = '';
-                        
-                        paragraphs.forEach(paragraph => {
-                            if (paragraph.trim() !== '') {
-                                // 處理特殊格式
-                                let processedText = paragraph
-                                    // 先轉義HTML特殊字符
-                                    .replace(/&/g, '&amp;')
-                                    .replace(/</g, '&lt;')
-                                    .replace(/>/g, '&gt;')
-                                    // 處理粗體文本 (**text**)
-                                    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-                                    // 處理斜體文本 (*text*)
-                                    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-                                    // 處理換行
-                                    .replace(/\n/g, '<br>');
-                                
-                                formattedHtml += `<p>${processedText}</p>`;
-                            }
-                        });
-                        
-                        // 如果沒有段落，則保持原樣
-                        if (formattedHtml === '') {
-                            formattedHtml = `<p>${content}</p>`;
-                        }
-                        
-                        contentElement.innerHTML = formattedHtml;
-                    }
                 } catch (readError) {
                     clearInterval(readTimeoutId);
                     console.error("讀取數據時出錯:", readError);
@@ -309,17 +259,81 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 return content;
             } catch (apiError) {
-                console.error("API 調用失敗，使用本地回覆:", apiError);
+                console.error("主要 API 調用失敗，嘗試使用備用 API (api2d):", apiError);
                 
-                // 如果是超時錯誤，提供特定的錯誤消息
-                if (apiError.name === 'AbortError') {
-                    throw new Error("請求超時，請稍後再試");
+                // 嘗試使用 api2d 作為備用 API
+                try {
+                    console.log("開始調用備用 API (api2d)...");
+                    
+                    // 構建 api2d 請求數據
+                    const api2dRequestData = {
+                        model: "gpt-3.5-turbo", // 使用 o3 模型
+                        messages: [
+                            {
+                                role: "system",
+                                content: "你是一個專注於寵物與兒童教育的AI助手。你的任務是回答關於如何利用寵物教導孩子的問題，提供專業、友善且有教育意義的建議。請使用繁體中文回答，並使用純文字格式，不要使用任何 Markdown 標記（如 ###）。使用數字和字母來標示列表項目，使用空行來分隔段落。"
+                            },
+                            {
+                                role: "user",
+                                content: message
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 800
+                    };
+                    
+                    // api2d 的 API 端點和密鑰
+                    const API2D_URL = "https://openai.api2d.net/v1/chat/completions";
+                    const API2D_KEY = "fk-xxxxxxxxxxxxxxxxxxxxxxxx"; // 請替換為實際的 API2D 密鑰
+                    
+                    // 設置請求超時
+                    const api2dController = new AbortController();
+                    const api2dTimeoutId = setTimeout(() => api2dController.abort(), 15000); // 15秒超時
+                    
+                    // 發送 api2d API 請求
+                    const api2dResponse = await fetch(API2D_URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${API2D_KEY}`
+                        },
+                        body: JSON.stringify(api2dRequestData),
+                        signal: api2dController.signal
+                    });
+                    
+                    // 清除超時計時器
+                    clearTimeout(api2dTimeoutId);
+                    
+                    if (!api2dResponse.ok) {
+                        const api2dErrorText = await api2dResponse.text();
+                        console.error("備用 API 錯誤響應:", api2dErrorText);
+                        throw new Error(`備用 API 請求失敗: ${api2dResponse.status} ${api2dResponse.statusText}`);
+                    }
+                    
+                    // 處理 api2d 回應
+                    const api2dData = await api2dResponse.json();
+                    const api2dContent = api2dData.choices[0]?.message?.content || "";
+                    
+                    console.log("備用 API 調用成功");
+                    
+                    // 顯示回應在 UI 上
+                    contentElement.innerHTML = `<p>${api2dContent}</p>`;
+                    
+                    return api2dContent;
+                    
+                } catch (api2dError) {
+                    console.error("備用 API 調用也失敗，使用本地回覆:", api2dError);
+                    
+                    // 如果是超時錯誤，提供特定的錯誤消息
+                    if (apiError.name === 'AbortError' || api2dError.name === 'AbortError') {
+                        throw new Error("請求超時，請稍後再試");
+                    }
+                    
+                    // 使用本地回覆
+                    const localResponse = getLocalAIResponse(message, true);
+                    contentElement.innerHTML = `<p>${localResponse}</p>`;
+                    return localResponse;
                 }
-                
-                // 使用本地回覆
-                const localResponse = getLocalAIResponse(message, true);
-                contentElement.innerHTML = `<p>${localResponse}</p>`;
-                return localResponse;
             }
         } catch (error) {
             console.error("AI API 調用過程中發生錯誤:", error);
@@ -492,14 +506,74 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 return content || getLocalAIResponse(message);
             } catch (apiError) {
-                console.error("API 調用失敗，使用本地回覆:", apiError);
+                console.error("主要 API 調用失敗，嘗試使用備用 API (api2d):", apiError);
                 
-                // 如果是超時錯誤，提供特定的錯誤消息
-                if (apiError.name === 'AbortError') {
-                    throw new Error("請求超時，請稍後再試");
+                // 嘗試使用 api2d 作為備用 API
+                try {
+                    console.log("開始調用備用 API (api2d)...");
+                    
+                    // 構建 api2d 請求數據
+                    const api2dRequestData = {
+                        model: "gpt-3.5-turbo", // 使用 o3 模型
+                        messages: [
+                            {
+                                role: "system",
+                                content: "你是一個專注於寵物與兒童教育的AI助手。你的任務是回答關於如何利用寵物教導孩子的問題，提供專業、友善且有教育意義的建議。請使用繁體中文回答，並使用純文字格式，不要使用任何 Markdown 標記（如 ###）。使用數字和字母來標示列表項目，使用空行來分隔段落。"
+                            },
+                            {
+                                role: "user",
+                                content: message
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 800
+                    };
+                    
+                    // api2d 的 API 端點和密鑰
+                    const API2D_URL = "https://oa.api2d.net";
+                    const API2D_KEY = "fk230956-rPFzZjnkv4f5G9LApSiqBainrfZD2bqB"; // 請替換為實際的 API2D 密鑰
+                    
+                    // 設置請求超時
+                    const api2dController = new AbortController();
+                    const api2dTimeoutId = setTimeout(() => api2dController.abort(), 15000); // 15秒超時
+                    
+                    // 發送 api2d API 請求
+                    const api2dResponse = await fetch(API2D_URL, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${API2D_KEY}`
+                        },
+                        body: JSON.stringify(api2dRequestData),
+                        signal: api2dController.signal
+                    });
+                    
+                    // 清除超時計時器
+                    clearTimeout(api2dTimeoutId);
+                    
+                    if (!api2dResponse.ok) {
+                        const api2dErrorText = await api2dResponse.text();
+                        console.error("備用 API 錯誤響應:", api2dErrorText);
+                        throw new Error(`備用 API 請求失敗: ${api2dResponse.status} ${api2dResponse.statusText}`);
+                    }
+                    
+                    // 處理 api2d 回應
+                    const api2dData = await api2dResponse.json();
+                    const api2dContent = api2dData.choices[0]?.message?.content || "";
+                    
+                    console.log("備用 API 調用成功");
+                    return api2dContent || getLocalAIResponse(message);
+                    
+                } catch (api2dError) {
+                    console.error("備用 API 調用也失敗，使用本地回覆:", api2dError);
+                    
+                    // 如果是超時錯誤，提供特定的錯誤消息
+                    if (apiError.name === 'AbortError' || api2dError.name === 'AbortError') {
+                        throw new Error("請求超時，請稍後再試");
+                    }
+                    
+                    return getLocalAIResponse(message, true);
                 }
-                
-                return getLocalAIResponse(message);
             }
         } catch (error) {
             console.error("AI API 調用過程中發生錯誤:", error);
