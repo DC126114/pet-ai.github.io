@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDUC2003-002_第三組_迪士尼公組</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <!-- 添加網站圖標 -->
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- 添加字體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 添加 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- 頁面頂部導航欄 -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-paw" style="color: #a1887f; font-size: 2rem; margin-right: 10px;"></i>
+                <div class="logo-text">寵物AI小助手</div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首頁</a></li>
+                    <li><a href="assistant.html" class="active">AI小助手</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- AI小助手主要內容 -->
+    <section class="assistant-main">
+        <div class="container">
+            <h2 class="page-title">AI小助手</h2>
+            <p class="page-description">有關寵物與孩子學習的問題？我們的AI小助手隨時為您解答！</p>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- 初始消息 -->
+                    <div class="message assistant">
+                        <div class="avatar">
+                            <img src="./img/teacher.jpeg" alt="AI小助手">
+                        </div>
+                        <div class="message-content">
+                            <p>您好！我是寵物AI小助手。我可以回答您關於如何利用寵物教導孩子的問題。請問有什麼我可以幫助您的嗎？</p>
+                        </div>
+                    </div>
+                    <!-- 消息將通過JavaScript動態添加 -->
+                </div>
+                
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="輸入您的問題...">
+                    <button id="sendButton">發送</button>
+                </div>
+            </div>
+            
+            <div class="suggested-questions">
+                <h3>您可能想問：</h3>
+                <div class="question-buttons">
+                    <button class="question-btn">如何通過養寵物教導孩子責任感？</button>
+                    <button class="question-btn">適合幼兒的寵物有哪些？</button>
+                    <button class="question-btn">寵物如何幫助孩子提高社交能力？</button>
+                    <button class="question-btn">如何處理孩子對寵物過敏的問題？</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁腳 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-contact">
+                    <h3>相關機構</h3>
+                    <p>Email: anima@macau.ctm.net</p>
+                    <p>電話: (+853) 28703 224</p>
+                    <p><a href="https://www.animamacau.org/" target="_blank" style="color: #d7ccc8; text-decoration: underline;">ANIMA 澳門愛護動物協會</a></p>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/animamacau.EN.CH.PT"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com/anima_macau/"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; EDUC2003-002_第三組_迪士尼公組</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./js/script.js"></script>
+</body>
+</html> 
