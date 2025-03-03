@@ -464,38 +464,97 @@ footer {
 /* AI小助手頁面樣式 */
 .assistant-main {
     padding: 60px 0;
-    position: relative;
+    background-color: #f8efe6;
+    min-height: calc(100vh - 200px); /* 確保頁面有足夠的高度 */
 }
 
 .page-title {
     text-align: center;
     font-size: 2.2rem;
     margin-bottom: 15px;
+    color: #795548;
 }
 
 .page-description {
     text-align: center;
     font-size: 1.1rem;
+    margin-bottom: 40px;
     color: #5d4037;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 聊天界面樣式 - 在assistant.html頁面中 */
+.assistant-main .chat-container {
+    width: 65%;
+    float: left;
+    height: 500px;
     margin-bottom: 40px;
 }
 
-.chat-container {
-    max-width: 800px;
-    margin: 0 auto 40px;
+.assistant-main .suggested-questions {
+    width: 30%;
+    float: right;
+    margin-top: 0;
+    padding: 20px;
     background-color: white;
     border-radius: 15px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
     border: 1px solid #efebe9;
+}
+
+/* 菜單相關樣式 */
+.menu-toggle {
+    display: none; /* 默認隱藏複選框 */
+}
+
+.menu-icon {
+    display: none; /* 默認隱藏菜單圖標 */
+    cursor: pointer;
+    padding: 8px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: #d7ccc8;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+.menu-icon:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 聊天界面樣式 */
+.chat-container {
+    position: relative; /* 添加相對定位 */
     width: 65%;
     float: left;
+    height: 500px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid #efebe9;
+    overflow: hidden; /* 確保內容不會溢出 */
+    display: flex;
+    flex-direction: column; /* 垂直排列 */
 }
 
 .chat-messages {
-    height: 400px;
+    flex: 1; /* 佔據剩餘空間 */
     overflow-y: auto;
     padding: 20px;
+}
+
+.chat-input {
+    position: sticky; /* 固定在底部 */
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #efebe9;
+    background-color: white; /* 確保背景色 */
+    z-index: 10; /* 確保在最上層 */
 }
 
 .message {
@@ -556,12 +615,6 @@ footer {
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid rgba(161, 136, 127, 0.1);
-}
-
-.chat-input {
-    display: flex;
-    padding: 15px;
-    border-top: 1px solid #efebe9;
 }
 
 .chat-input input {
@@ -671,24 +724,48 @@ footer {
 
     .nav-menu {
         display: none; /* 默認隱藏導航菜單 */
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
+        position: fixed; /* 固定定位 */
+        top: 0;
+        right: -250px; /* 初始位置在屏幕右側外 */
+        width: 250px;
+        height: 100vh;
         background-color: #3e2723;
         flex-direction: column;
-        padding: 10px 0;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        padding: 60px 0 20px;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+        transition: right 0.3s ease; /* 添加過渡效果 */
+        z-index: 1000; /* 確保在最上層 */
     }
 
     .menu-toggle:checked ~ .nav-menu {
         display: flex; /* 選中時顯示導航菜單 */
+        right: 0; /* 顯示時移動到屏幕內 */
+    }
+
+    /* 添加關閉按鈕 */
+    .nav-menu::before {
+        content: "\f00d"; /* Font Awesome 的關閉圖標 */
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        color: #d7ccc8;
+        font-size: 1.2rem;
+        cursor: pointer;
     }
 
     nav ul li {
-        margin: 10px 0;
+        margin: 15px 0;
         width: 100%;
-        text-align: center;
+        text-align: left;
+        padding: 0 30px;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     /* 新增的響應式樣式 */
@@ -704,6 +781,21 @@ footer {
     
     .question-buttons {
         flex-direction: column;
+    }
+    
+    /* AI小助手頁面的響應式樣式 */
+    .assistant-main .chat-container,
+    .assistant-main .suggested-questions {
+        width: 100%;
+        float: none;
+    }
+    
+    .assistant-main .chat-container {
+        height: 60vh;
+    }
+    
+    .assistant-main .suggested-questions {
+        margin-top: 20px;
     }
 }
 
@@ -734,7 +826,7 @@ footer {
     
     /* 聊天界面優化 */
     .chat-messages {
-        max-height: 350px;
+        max-height: none; /* 移除最大高度限制 */
     }
     
     .message-content {
@@ -742,14 +834,18 @@ footer {
     }
     
     /* 聊天界面在移動設備上的優化 */
-    .chat-container {
-        height: 60vh; /* 減小聊天容器高度 */
+    .chat-container,
+    .assistant-main .chat-container {
+        height: 70vh; /* 設置聊天容器高度 */
         margin: 10px 0;
+        display: flex;
+        flex-direction: column;
     }
     
     .chat-messages {
+        flex: 1; /* 佔據剩餘空間 */
+        overflow-y: auto;
         padding: 10px;
-        height: calc(100% - 60px); /* 減小聊天消息區域高度，為輸入區域留出空間 */
     }
     
     .message {
@@ -759,10 +855,12 @@ footer {
     }
     
     .chat-input {
+        position: sticky;
+        bottom: 0;
         padding: 10px;
-        height: 50px; /* 固定輸入區域高度 */
-        display: flex;
-        align-items: center;
+        background-color: white;
+        border-top: 1px solid #efebe9;
+        z-index: 10;
     }
     
     .chat-input input {
@@ -792,13 +890,19 @@ footer {
         font-size: 13px;
         flex: 0 0 calc(50% - 10px); /* 在移動設備上每行顯示兩個按鈕 */
     }
+    
+    /* 頁面標題在移動設備上的優化 */
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .page-description {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
 }
 
 @media (max-width: 576px) {
-    .menu-icon span {
-        font-size: 0.9rem; /* 減小菜單文字大小 */
-    }
-    
     /* 小屏幕手機優化 */
     .hero-content h2 {
         font-size: 1.8rem;
@@ -815,7 +919,7 @@ footer {
     
     /* 聊天界面在小屏幕上的進一步優化 */
     .chat-messages {
-        max-height: 300px;
+        padding: 8px;
     }
     
     .message-content {
@@ -829,7 +933,6 @@ footer {
     
     .chat-input {
         padding: 8px;
-        height: 45px; /* 進一步減小輸入區域高度 */
     }
     
     .chat-input input {
@@ -1035,24 +1138,4 @@ footer {
     padding: 8px 12px;
     font-size: 13px;
     flex: 0 0 calc(50% - 10px); /* 在移動設備上每行顯示兩個按鈕 */
-}
-
-/* 菜單相關樣式 */
-.menu-toggle {
-    display: none; /* 默認隱藏複選框 */
-}
-
-.menu-icon {
-    display: none; /* 默認隱藏菜單圖標 */
-    cursor: pointer;
-    padding: 8px 12px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    color: #d7ccc8;
-    font-weight: 500;
-}
-
-.menu-icon:hover {
-    color: #ffffff;
-    background-color: rgba(255, 255, 255, 0.2);
 }
